@@ -3,6 +3,7 @@ yubico-client = "==1.10.0"
 
 [dev-packages]
 yubico-client = "==1.10.0"
+oneidentity-safeguard-sessions-plugin-sdk = "~=1.1.0"
 
 [requires]
 python_version = "3.6"
