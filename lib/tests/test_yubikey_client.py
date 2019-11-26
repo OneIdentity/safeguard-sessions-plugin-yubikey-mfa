@@ -26,7 +26,6 @@ from safeguard.sessions.plugin.mfa_client import MFAAuthenticationFailure, MFACo
 from unittest.mock import MagicMock
 
 
-
 def test_otp_ok(yubi_client, yubi_trigger_nosignok, yubi_device_id, yubi_otp):
     assert yubi_client.otp_authenticate(yubi_device_id, yubi_otp)
 
