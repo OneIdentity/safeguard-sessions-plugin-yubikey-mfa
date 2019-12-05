@@ -49,64 +49,65 @@ def fake_yubikey_service(request, watcher_getter, port_getter):
 #
 @pytest.fixture
 def fake_random(monkeypatch):
-    monkeypatch.setattr('os.urandom', lambda len: random)
+    monkeypatch.setattr("os.urandom", lambda len: random)
 
 
 @pytest.fixture
 def yubi_server_url(request):
-    backend_service = request.config.getoption('backend_service')
+    backend_service = request.config.getoption("backend_service")
 
     if backend_service in ("record", "use"):
-        return request.getfixturevalue('fake_yubikey_service')
+        return request.getfixturevalue("fake_yubikey_service")
     elif backend_service == "replay":
-        vcr_cassette = request.getfixturevalue('vcr_cassette')
+        vcr_cassette = request.getfixturevalue("vcr_cassette")
         return _peek_server_in_recorded_requests(vcr_cassette)
 
 
 @pytest.fixture
 def yubi_action(yubi_server_url):
     def _(action):
-        requests.get('{}/set_mock_action?action={}'.format(yubi_server_url, action))
+        requests.get("{}/set_mock_action?action={}".format(yubi_server_url, action))
+
     return _
 
 
 @pytest.fixture
 def yubi_trigger_timeout(yubi_action):
-    yubi_action('timeout')
+    yubi_action("timeout")
 
 
 @pytest.fixture
 def yubi_trigger_badotp(yubi_action):
-    yubi_action('BAD_OTP')
+    yubi_action("BAD_OTP")
 
 
 @pytest.fixture
 def yubi_trigger_nosignok(yubi_action):
-    yubi_action('no_signature_ok')
+    yubi_action("no_signature_ok")
 
 
 @pytest.fixture
 def yubi_client(request, yubi_server_url, site_parameters):
-    backend_service = request.config.getoption('backend_service')
+    backend_service = request.config.getoption("backend_service")
 
     if backend_service != "use":
-        request.getfixturevalue('fake_random')
+        request.getfixturevalue("fake_random")
 
-    return Client(site_parameters['client_id'], apiurls=['{}/sapi/2.0/verify'.format(yubi_server_url)])
+    return Client(site_parameters["client_id"], apiurls=["{}/sapi/2.0/verify".format(yubi_server_url)])
 
 
 @pytest.fixture
 def yubi_device_id(site_parameters):
-    return site_parameters['device_id']
+    return site_parameters["device_id"]
 
 
 @pytest.fixture
 def yubi_otp(site_parameters):
-    return site_parameters['otp']
+    return site_parameters["otp"]
 
 
 def _peek_server_in_recorded_requests(vcr_cassette):
     if len(vcr_cassette) == 0:
         return "http://definitely-unreachable-server-as-no-recordings-took-place"
     request, response = vcr_cassette.data[0]
-    return 'http://{}:{}'.format(request.host, request.port)
+    return "http://{}:{}".format(request.host, request.port)
