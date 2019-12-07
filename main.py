@@ -23,6 +23,7 @@
 from lib.client import Client
 from safeguard.sessions.plugin import AAPlugin
 
+
 class Plugin(AAPlugin):
     def do_authenticate(self):
         client = Client.from_config(self.plugin_configuration)

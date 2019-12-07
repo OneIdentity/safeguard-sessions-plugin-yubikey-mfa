@@ -31,12 +31,12 @@ class FakeYubikeyService(object):
         self.server_url = None
 
     def run(self):
-        host = 'localhost'
+        host = "localhost"
         port = self._port_getter()
-        self.server_url = 'http://{}:{}'.format(host, port)
+        self.server_url = "http://{}:{}".format(host, port)
 
         testdir = os.path.dirname(os.path.abspath(__file__))
-        script = '{}/mock_http_server.py'.format(testdir)
+        script = "{}/mock_http_server.py".format(testdir)
 
         def checker():
             try:
@@ -45,4 +45,4 @@ class FakeYubikeyService(object):
                 return False
             return True
 
-        self._watcher_getter(name=sys.executable, arguments=[script, '--port', str(port)], checker=checker)
+        self._watcher_getter(name=sys.executable, arguments=[script, "--port", str(port)], checker=checker)
